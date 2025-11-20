@@ -1,4 +1,3 @@
-import { Memo } from '@/types/memo'
 import { localStorageUtils } from './localStorage'
 import { memoService } from '@/services/memoService'
 

@@ -1,8 +1,20 @@
 import { Memo, MemoFormData } from '@/types/memo'
 import { supabase } from '@/lib/supabase/browserClient'
 
+// 데이터베이스 행 타입 정의
+interface DbRow {
+  id: string
+  title: string
+  content: string
+  category: string
+  tags: string[] | null
+  summary: string | null
+  created_at: string
+  updated_at: string
+}
+
 // 데이터베이스 스키마와 Memo 인터페이스 간 변환
-const mapDbRowToMemo = (row: any): Memo => ({
+const mapDbRowToMemo = (row: DbRow): Memo => ({
   id: row.id,
   title: row.title,
   content: row.content,
@@ -145,7 +157,7 @@ export const memoService = {
           const errorData = await response.json()
           throw new Error(errorData.error || '태그 생성에 실패했습니다')
         } else {
-          const text = await response.text()
+          await response.text()
           throw new Error(`서버 오류 (${response.status}): 태그 생성에 실패했습니다`)
         }
       }

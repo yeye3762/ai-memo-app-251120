@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase/serverClient'
 import { revalidatePath } from 'next/cache'
+import { Memo } from '@/types/memo'
+
+// 데이터베이스 행 타입 정의
+interface DbRow {
+  id: string
+  title: string
+  content: string
+  category: string
+  tags: string[] | null
+  summary: string | null
+  created_at: string
+  updated_at: string
+}
 
 // 데이터베이스 스키마와 Memo 인터페이스 간 변환
-const mapDbRowToMemo = (row: any) => ({
+const mapDbRowToMemo = (row: DbRow): Memo => ({
   id: row.id,
   title: row.title,
   content: row.content,
@@ -14,17 +27,16 @@ const mapDbRowToMemo = (row: any) => ({
   updatedAt: row.updated_at,
 })
 
-const mapMemoToDbRow = (memo: any) => ({
-  title: memo.title,
-  content: memo.content,
-  category: memo.category,
-  tags: memo.tags || [],
-  summary: memo.summary || undefined,
-})
-
 // GET: 모든 메모 가져오기
 export async function GET() {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Supabase is not configured' },
+        { status: 500 }
+      )
+    }
+
     const { data, error } = await supabaseAdmin
       .from('memos')
       .select('*')
@@ -56,6 +68,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         { error: 'Title, content, and category are required' },
         { status: 400 }
+      )
+    }
+
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { error: 'Supabase is not configured' },
+        { status: 500 }
       )
     }
 

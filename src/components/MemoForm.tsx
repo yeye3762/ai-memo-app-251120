@@ -11,12 +11,19 @@ import {
 import { memoService } from '@/services/memoService'
 import '@uiw/react-md-editor/markdown-editor.css'
 
+// MDEditor는 타입 정의가 복잡하여 unknown으로 처리
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
   {
     ssr: false,
   }
-) as any
+) as unknown as React.ComponentType<{
+  value: string
+  onChange: (value: string | undefined) => void
+  preview?: 'live' | 'edit' | 'preview'
+  hideToolbar?: boolean
+  height?: number
+}>
 
 interface MemoFormProps {
   isOpen: boolean

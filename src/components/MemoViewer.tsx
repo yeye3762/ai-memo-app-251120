@@ -138,7 +138,7 @@ export default function MemoViewer({
           throw new Error(errorData.error || '요약 생성에 실패했습니다')
         } else {
           // HTML 응답인 경우 (에러 페이지)
-          const text = await response.text()
+          await response.text()
           throw new Error(`서버 오류 (${response.status}): 요약 생성에 실패했습니다`)
         }
       }

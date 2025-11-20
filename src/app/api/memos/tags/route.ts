@@ -46,6 +46,13 @@ ${content}
       },
     })
 
+    if (!response.text) {
+      return NextResponse.json(
+        { error: 'Failed to generate tags: No response from AI' },
+        { status: 500 }
+      )
+    }
+
     const tagsText = response.text.trim()
     
     // 쉼표로 구분된 태그를 배열로 변환
